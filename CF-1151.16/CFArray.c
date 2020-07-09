@@ -473,18 +473,26 @@ CF_PRIVATE CFMutableArrayRef __CFArrayCreateMutable0(CFAllocatorRef allocator, C
 }
 
 CF_PRIVATE CFArrayRef __CFArrayCreateCopy0(CFAllocatorRef allocator, CFArrayRef array) {
+    
     CFArrayRef result;
+    // >>>> CFArrayCallBacks变量，用于存放数组元素的回调
     const CFArrayCallBacks *cb;
+    
+    // >>>> 存放数组元素的结构体指针
     struct __CFArrayBucket *buckets;
     CFAllocatorRef bucketsAllocator;
     void* bucketsBase;
+    
+    // >>>> 获取源数组元素的总个数
     CFIndex numValues = CFArrayGetCount(array);
     CFIndex idx;
     if (CF_IS_OBJC(CFArrayGetTypeID(), array)) {
 	cb = &kCFTypeArrayCallBacks;
     } else {
 	cb = __CFArrayGetCallBacks(array);
-	    }
+    }
+    
+    // >>>> 初始化以一个不可变数组
     result = __CFArrayInit(allocator, __kCFArrayImmutable, numValues, cb);
     cb = __CFArrayGetCallBacks(result); // GC: use the new array's callbacks so we don't leak.
     buckets = __CFArrayGetBucketsPtr(result);
@@ -498,6 +506,8 @@ CF_PRIVATE CFArrayRef __CFArrayCreateCopy0(CFAllocatorRef allocator, CFArrayRef 
 	__CFAssignWithWriteBarrier((void **)&buckets->_item, (void *)value);
 	buckets++;
     }
+    
+    // >>>> //设定数组的长度count
     __CFArraySetCount(result, numValues);
     return result;
 }
@@ -513,12 +523,17 @@ CF_PRIVATE CFMutableArrayRef __CFArrayCreateMutableCopy0(CFAllocatorRef allocato
     else {
 	cb = __CFArrayGetCallBacks(array);
     }
+    // 将标记设置为双端队列
     flags = __kCFArrayDeque;
+    // 创建新的不可变数组
     result = (CFMutableArrayRef)__CFArrayInit(allocator, flags, capacity, cb);
+    //设置数组的容量
     if (0 == capacity) _CFArraySetCapacity(result, numValues);
+    
     for (idx = 0; idx < numValues; idx++) {
-	const void *value = CFArrayGetValueAtIndex(array, idx);
-	CFArrayAppendValue(result, value);
+        const void *value = CFArrayGetValueAtIndex(array, idx);
+        //将元素对象添加到新的数组列表中
+        CFArrayAppendValue(result, value);
     }
     return result;
 }

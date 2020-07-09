@@ -1654,16 +1654,28 @@ CFStringRef CFStringCreateWithSubstring(CFAllocatorRef alloc, CFStringRef str, C
     }
 }
 
+/*
+ * >>>> 字符串的 copy 操作
+ */
 CFStringRef CFStringCreateCopy(CFAllocatorRef alloc, CFStringRef str) {
 //  CF_OBJC_FUNCDISPATCHV(__kCFStringTypeID, CFStringRef, (NSString *)str, copy);
 
+    /*
+     * 如果该字符串不是可变的，并且与我们使用的分配器具有相同的分配器，
+     并且这些字符是内联的，或者由该字符串拥有，或者该字符串是常量。
+     然后保留而不是制作真实副本。
+     */
     __CFAssertIsString(str);
+    // >> 判断源字符串是否是 mutable
     if (!__CFStrIsMutable((CFStringRef)str) && 								// If the string is not mutable
         ((alloc ? alloc : __CFGetDefaultAllocator()) == __CFGetAllocator(str)) &&		//  and it has the same allocator as the one we're using
         (__CFStrIsInline((CFStringRef)str) || __CFStrFreeContentsWhenDone((CFStringRef)str) || __CFStrIsConstant((CFStringRef)str))) {	//  and the characters are inline, or are owned by the string, or the string is constant
+        // >> 使用引用计数加一来代替真正的copy,也就是这里是浅拷贝。
         if (!(kCFUseCollectableAllocator && (0))) CFRetain(str);			// Then just retain instead of making a true copy
 	return str;
     }
+    // >> __CFStrIsEightBit 指的是这个字符串是否有一个 byte，即是否 Unicode。
+    
     if (__CFStrIsEightBit((CFStringRef)str)) {
         const uint8_t *contents = (const uint8_t *)__CFStrContents((CFStringRef)str);
         return __CFStringCreateImmutableFunnel3(alloc, contents + __CFStrSkipAnyLengthByte((CFStringRef)str), __CFStrLength2((CFStringRef)str, contents), __CFStringGetEightBitStringEncoding(), false, false, false, false, false, ALLOCATORSFREEFUNC, 0);
@@ -1929,10 +1941,14 @@ CFMutableStringRef CFStringCreateMutableWithExternalCharactersNoCopy(CFAllocator
     return string;
 }
  
+
 CFMutableStringRef CFStringCreateMutable(CFAllocatorRef alloc, CFIndex maxLength) {
     return __CFStringCreateMutableFunnel(alloc, maxLength, __kCFNotInlineContentsDefaultFree);
 }
 
+/*
+ * >>>> 字符串的 copy 操作
+ */
 CFMutableStringRef  CFStringCreateMutableCopy(CFAllocatorRef alloc, CFIndex maxLength, CFStringRef string) {
     CFMutableStringRef newString;
 
@@ -1941,6 +1957,7 @@ CFMutableStringRef  CFStringCreateMutableCopy(CFAllocatorRef alloc, CFIndex maxL
     __CFAssertIsString(string);
 
     newString = CFStringCreateMutable(alloc, maxLength);
+    // 将源对象的内容，放到新创建的newString中
     __CFStringReplace(newString, CFRangeMake(0, 0), string);
 
     return newString;
