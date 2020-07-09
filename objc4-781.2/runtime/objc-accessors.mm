@@ -162,13 +162,12 @@ void objc_setProperty_nonatomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t o
 // if simultaneously used for a setter then there would be contention on src.
 // So we need two locks - one of which will be contended.
 /**
- * 对结构体进行拷贝
+ * 结构体拷贝
  * src：源指针
  * dest：目标指针
  * size：大小
  * atomic：是否是原子操作
- * hasStrong：是否是strong修饰的
- 
+ * hasStrong：可能是表示是否是strong修饰
  */
 void objc_copyStruct(void *dest, const void *src, ptrdiff_t size, BOOL atomic, BOOL hasStrong __unused) {
     spinlock_t *srcLock = nil;
@@ -189,19 +188,23 @@ void objc_copyStruct(void *dest, const void *src, ptrdiff_t size, BOOL atomic, B
 }
 
 /**
- * 对对象进行拷贝
+ * 对象拷贝
  * src：源指针
  * dest：目标指针
- * copyHelper：对对象进行实际拷贝的函数指针，参数是src和dest
+ * copyHelper：对对象进行实际拷贝的函数指针，参数是 src 和 dest
 */
 
 void objc_copyCppObjectAtomic(void *dest, const void *src, void (*copyHelper) (void *dest, const void *source)) {
+    // >> 获取源指针的对象锁
     spinlock_t *srcLock = &CppObjectLocks[src];
+    // >> 获取目标指针的对象锁
     spinlock_t *dstLock = &CppObjectLocks[dest];
+    // >> 对源对象和目标对象进行上锁
     spinlock_t::lockTwo(srcLock, dstLock);
 
     // let C++ code perform the actual copy.
+    // >> 调用函数指针对应的函数，让C++进行实际的拷贝操作
     copyHelper(dest, src);
-    
+    // >> 解锁
     spinlock_t::unlockTwo(srcLock, dstLock);
 }
