@@ -576,7 +576,7 @@ struct ivar_t {
         return 1 << alignment_raw;
     }
 };
-
+// >> property 结构体
 struct property_t {
     const char *name;
     const char *attributes;

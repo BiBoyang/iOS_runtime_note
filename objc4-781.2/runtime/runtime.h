@@ -85,6 +85,7 @@ struct objc_method_description {
 };
 
 /// Defines a property attribute
+// >> property_t 里的 attributes
 typedef struct {
     const char * _Nonnull name;           /**< The name of the attribute */
     const char * _Nonnull value;          /**< The value of the attribute (usually empty) */

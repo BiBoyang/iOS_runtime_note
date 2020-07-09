@@ -45,16 +45,25 @@ StripedMap<spinlock_t> CppObjectLocks;
 
 #define MUTABLE_COPY 2
 
+/* >> getter 方法的实现
+ * self : 隐含参数，对象消息接收者
+ * _cmd : 隐含参数，setter对应函数
+ * offset : 属性所在指针的偏移量
+ * atomic : 是否是原子操作
+ */
 id objc_getProperty(id self, SEL _cmd, ptrdiff_t offset, BOOL atomic) {
     if (offset == 0) {
         return object_getClass(self);
     }
 
     // Retain release world
+    // >> 计算属性缩在的指针偏移量
     id *slot = (id*) ((char*)self + offset);
+    // >> 如果是非原子性操作，直接返回属性的对象指针
     if (!atomic) return *slot;
         
     // Atomic retain release world
+    // >> 这里是自旋锁，但是因为有线程优先级冲突的问题，将其修改
     spinlock_t& slotlock = PropertyLocks[slot];
     slotlock.lock();
     id value = objc_retain(*slot);
@@ -67,39 +76,57 @@ id objc_getProperty(id self, SEL _cmd, ptrdiff_t offset, BOOL atomic) {
 
 static inline void reallySetProperty(id self, SEL _cmd, id newValue, ptrdiff_t offset, bool atomic, bool copy, bool mutableCopy) __attribute__((always_inline));
 
+/*
+ * self : 隐含参数，对象消息接收者
+ * _cmd : 隐含参数，setter对应函数
+ * newValue : 需要赋值的传入
+ * offset : 属性所在指针的偏移量
+ * atomic : 是否是原子操作
+ * copy : 是否是浅拷贝
+ * mutableCopy : 是否是深拷贝
+ */
 static inline void reallySetProperty(id self, SEL _cmd, id newValue, ptrdiff_t offset, bool atomic, bool copy, bool mutableCopy)
 {
+    // >> 偏移量是0的时候，指向的其实就是对象自身，对对象自身赋值
     if (offset == 0) {
         object_setClass(self, newValue);
         return;
     }
 
     id oldValue;
+    // >> 获取属性的对象指针
     id *slot = (id*) ((char*)self + offset);
 
     if (copy) {
+        // >> 浅拷贝，将传入的新对象调用copyWithZone方法浅拷贝一份，并且赋值给newValue变量
         newValue = [newValue copyWithZone:nil];
     } else if (mutableCopy) {
+        // >> 深拷贝，将传入的新对象调用mutableCopyWithZone方法深拷贝一份，并且赋值给newValue变量
         newValue = [newValue mutableCopyWithZone:nil];
     } else {
+        // >> 非拷贝，且传入的对象与旧对象一致，直接返回
         if (*slot == newValue) return;
+        // >> 否则，调用objc_retain函数，将newValue变量指向对象引用计数+1，并且将返回值赋值给newValue变量
         newValue = objc_retain(newValue);
     }
 
     if (!atomic) {
+        // >> 非原子操作，将slot指针指向的对象引用赋值给oldValue
         oldValue = *slot;
         *slot = newValue;
     } else {
+        // >> 原子操作，则获取锁
         spinlock_t& slotlock = PropertyLocks[slot];
         slotlock.lock();
         oldValue = *slot;
         *slot = newValue;        
         slotlock.unlock();
     }
-
+    // >> 释放oldValue所持有的对象
     objc_release(oldValue);
 }
 
+// >> setter 方法的实现
 void objc_setProperty(id self, SEL _cmd, ptrdiff_t offset, id newValue, BOOL atomic, signed char shouldCopy) 
 {
     bool copy = (shouldCopy && shouldCopy != MUTABLE_COPY);
