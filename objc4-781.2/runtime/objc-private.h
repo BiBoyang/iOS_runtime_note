@@ -810,7 +810,14 @@ class TimeLogger {
     }
 };
 
+// >> CacheLineSize 显然代表的时候用于缓存的 value 大小
 enum { CacheLineSize = 64 };
+/*
+ StripedMap 是一个模板类，根据传递的实际参数决定其中 array 成员存储的元素类型。
+ 能通过对象的地址，运算出 Hash 值，通过该 hash 值找到对应的 value 。
+ 这里的 CacheLineSize 显然代表的时候用于缓存的 value 大小，使用 alignas 让字节对齐；
+ 而 StripeCount 则表示在 iPhone 中，创建的 array 大小是 8 。
+ */
 
 // StripedMap<T> is a map of void* -> T, sized appropriately 
 // for cache-friendly lock striping. 
@@ -825,6 +832,7 @@ class StripedMap {
 #endif
 
     struct PaddedT {
+        // >> alignas是字节对齐的意思，表示让数组中每一个元素的起始位置对齐到64的倍数
         T value alignas(CacheLineSize);
     };
 

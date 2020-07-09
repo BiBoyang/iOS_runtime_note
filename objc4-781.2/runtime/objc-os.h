@@ -702,7 +702,7 @@ template <bool Debug> class recursive_mutex_tt;
 #else
 #   define LOCKDEBUG 0
 #endif
-
+// >> 指定别名
 using spinlock_t = mutex_tt<LOCKDEBUG>;
 using mutex_t = mutex_tt<LOCKDEBUG>;
 using monitor_t = monitor_tt<LOCKDEBUG>;
@@ -719,8 +719,24 @@ extern const fork_unsafe_lock_t fork_unsafe_lock;
 #include "objc-lockdebug.h"
 
 template <bool Debug>
+// >> 因为 iOS 中自旋锁的问题，将其替换为互斥锁
 class mutex_tt : nocopy_t {
+    /* >> 实现在这里:
+     底层的锁，允许等待者在竞争中高效的阻挡。
+     一般来说，应该首选更高级别的同步原语，如pthread或dispatch子系统提供的同步原语。
+     存储在锁中的值应该被视为不透明的，并且应该定义实现，它们包含系统可能用来解决优先级反转的线程所有权信息。
+     此锁解锁，必须从锁定它的同一线程，尝试从其他线程解除锁定将导致断言中止进程。
+     不能通过共享或多重映射内存从多个进程或线程访问此锁，锁的实现依赖于锁值和所属进程的地址。
+     必须使用 OS_UNFAIR_LOCK_INIT 初始化
+     替换已弃用的OSSpinLock。不会在争用时旋转，而是在内核中等待解锁唤醒。
+     与OSSpinLock一样，不存在公平性或锁排序的尝试，例如，在被叫醒的等待者有机会尝试获取锁之前，
+     解锁器可能会立即重新获取锁。这可能有利于性能的原因，但也增加等待者饥饿的一点可能。
+     
+     至于不可靠的原因，可以查阅 [不再安全的 OSSpinLock](https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/)
+     
+     */
     os_unfair_lock mLock;
+    
  public:
     constexpr mutex_tt() : mLock(OS_UNFAIR_LOCK_INIT) {
         lockdebug_remember_mutex(this);

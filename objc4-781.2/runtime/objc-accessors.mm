@@ -41,11 +41,13 @@
 
 StripedMap<spinlock_t> PropertyLocks;
 StripedMap<spinlock_t> StructLocks;
+// >> PropertyLocks 是一个 StripedMap 类型的全局变量,而StripedMap 是一个 hashMap，key 是指针，value 是 spinlock_t 对象。
 StripedMap<spinlock_t> CppObjectLocks;
 
 #define MUTABLE_COPY 2
 
-/* >> getter 方法的实现
+/**
+ * >> getter 方法的实现
  * self : 隐含参数，对象消息接收者
  * _cmd : 隐含参数，setter对应函数
  * offset : 属性所在指针的偏移量
@@ -76,7 +78,7 @@ id objc_getProperty(id self, SEL _cmd, ptrdiff_t offset, BOOL atomic) {
 
 static inline void reallySetProperty(id self, SEL _cmd, id newValue, ptrdiff_t offset, bool atomic, bool copy, bool mutableCopy) __attribute__((always_inline));
 
-/*
+/**
  * self : 隐含参数，对象消息接收者
  * _cmd : 隐含参数，setter对应函数
  * newValue : 需要赋值的传入
@@ -159,21 +161,39 @@ void objc_setProperty_nonatomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t o
 // This entry point was designed wrong.  When used as a getter, src needs to be locked so that
 // if simultaneously used for a setter then there would be contention on src.
 // So we need two locks - one of which will be contended.
+/**
+ * 对结构体进行拷贝
+ * src：源指针
+ * dest：目标指针
+ * size：大小
+ * atomic：是否是原子操作
+ * hasStrong：是否是strong修饰的
+ 
+ */
 void objc_copyStruct(void *dest, const void *src, ptrdiff_t size, BOOL atomic, BOOL hasStrong __unused) {
     spinlock_t *srcLock = nil;
     spinlock_t *dstLock = nil;
+    // >> 如果是原子操作，则加锁
     if (atomic) {
         srcLock = &StructLocks[src];
         dstLock = &StructLocks[dest];
         spinlock_t::lockTwo(srcLock, dstLock);
     }
-
+    // >> 实际的拷贝操作
     memmove(dest, src, size);
 
+    // >> 解锁
     if (atomic) {
         spinlock_t::unlockTwo(srcLock, dstLock);
     }
 }
+
+/**
+ * 对对象进行拷贝
+ * src：源指针
+ * dest：目标指针
+ * copyHelper：对对象进行实际拷贝的函数指针，参数是src和dest
+*/
 
 void objc_copyCppObjectAtomic(void *dest, const void *src, void (*copyHelper) (void *dest, const void *source)) {
     spinlock_t *srcLock = &CppObjectLocks[src];
