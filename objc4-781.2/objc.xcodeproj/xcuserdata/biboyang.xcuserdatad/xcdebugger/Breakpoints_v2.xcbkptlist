@@ -62,8 +62,8 @@
             filePath = "runtime/NSObject.mm"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2152"
-            endingLineNumber = "2152"
+            startingLineNumber = "2192"
+            endingLineNumber = "2192"
             landmarkName = "+doesNotRecognizeSelector:"
             landmarkType = "7">
          </BreakpointContent>
