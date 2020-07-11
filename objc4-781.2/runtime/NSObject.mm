@@ -256,7 +256,7 @@ objc_storeStrong(id *location, id obj)
     objc_release(prev);
 }
 
-
+#pragma mark ---------------------- weak 的初始化 storeWeak----------------------
 // Update a weak variable.
 // If HaveOld is true, the variable has an existing value 
 //   that needs to be cleaned up. This value might be nil.
@@ -435,7 +435,7 @@ objc_storeWeakOrNil(id *location, id newObj)
  * @param location Address of __weak ptr. 
  * @param newObj Object ptr. 
  */
-#pragma mark ---------------------- weak 的初始化 ----------------------
+#pragma mark ---------------------- weak 的初始化 initweak----------------------
 // >> block 的初始化
 /* -1-
  * location 是弱指针本身的地址
@@ -1684,8 +1684,7 @@ _objc_rootIsDeallocating(id obj)
 
 
 void 
-objc_clear_deallocating(id obj) 
-{
+objc_clear_deallocating(id obj) {
     ASSERT(obj);
 
     if (obj->isTaggedPointer()) return;
