@@ -413,15 +413,13 @@ objc_object::rootIsDeallocating()
     return sidetable_isDeallocating();
 }
 
-
-inline void 
-objc_object::clearDeallocating()
+// >> 释放weak对象 -8-
+inline void  objc_object::clearDeallocating()
 {
     if (slowpath(!isa.nonpointer)) {
         // Slow path for raw pointer isa.
         sidetable_clearDeallocating();
-    }
-    else if (slowpath(isa.weakly_referenced  ||  isa.has_sidetable_rc)) {
+    } else if (slowpath(isa.weakly_referenced  ||  isa.has_sidetable_rc)) {
         // Slow path for non-pointer isa with weak refs and/or side table data.
         clearDeallocating_slow();
     }
@@ -430,8 +428,8 @@ objc_object::clearDeallocating()
 }
 
 
-inline void
-objc_object::rootDealloc()
+// >> 释放 weak 对象的过程 -3-
+inline void objc_object::rootDealloc()
 {
     if (isTaggedPointer()) return;  // fixme necessary?
 

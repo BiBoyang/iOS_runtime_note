@@ -7670,8 +7670,8 @@ object_copyFromZone(id oldObj, size_t extraBytes, void *zone)
 * Removes associative references.
 * Returns `obj`. Does nothing if `obj` is nil.
 **********************************************************************/
-void *objc_destructInstance(id obj) 
-{
+// >> 释放对象 -6-
+void *objc_destructInstance(id obj) {
     if (obj) {
         // Read all of the flags at once for performance.
         bool cxx = obj->hasCxxDtor();
@@ -7692,8 +7692,8 @@ void *objc_destructInstance(id obj)
 * fixme
 * Locking: none
 **********************************************************************/
-id 
-object_dispose(id obj)
+// >> 释放对象 -5-
+id  object_dispose(id obj)
 {
     if (!obj) return nil;
 

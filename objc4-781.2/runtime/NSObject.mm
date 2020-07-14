@@ -1256,8 +1256,8 @@ objc_object::rootRelease_underflow(bool performDealloc)
 // for objects with nonpointer isa
 // that were ever weakly referenced 
 // or whose retain count ever overflowed to the side table.
-NEVER_INLINE void
-objc_object::clearDeallocating_slow()
+// 释放 weak 对象 -9-
+NEVER_INLINE void objc_object::clearDeallocating_slow()
 {
     ASSERT(isa.nonpointer  &&  (isa.weakly_referenced || isa.has_sidetable_rc));
 
@@ -1852,8 +1852,8 @@ objc_opt_respondsToSelector(id obj, SEL sel)
     return ((BOOL(*)(id, SEL, SEL))objc_msgSend)(obj, @selector(respondsToSelector:), sel);
 }
 
-void
-_objc_rootDealloc(id obj)
+// >> 释放对象 -2-
+void _objc_rootDealloc(id obj)
 {
     ASSERT(obj);
 
@@ -2380,6 +2380,7 @@ __attribute__((objc_nonlazy_class))
 
 
 // Replaced by NSZombies
+// >> 释放对象的开始 - 1 -
 - (void)dealloc {
     _objc_rootDealloc(self);
 }
