@@ -43,23 +43,23 @@
 
 #if !OBJC_TYPES_DEFINED
 
-// >> 表示一个类里的方法
+// MARK: -- 表示一个类里的方法
 /// An opaque type that represents a method in a class definition.
 typedef struct objc_method *Method;
 
-// >> 表示勒种的一个成员变量
+// MARK: -- 表示勒种的一个成员变量
 /// An opaque type that represents an instance variable.
 typedef struct objc_ivar *Ivar;
 
-// >> 表示一个分类
+// MARK: -- 表示一个分类
 /// An opaque type that represents a category.
 typedef struct objc_category *Category;
 
-// >> 表示一个属性
+// MARK: -- 表示一个属性
 /// An opaque type that represents an Objective-C declared property.
 typedef struct objc_property *objc_property_t;
 
-// >> 表示类的声明结构
+// MARK: -- 表示类的声明结构
 struct objc_class {
     Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
 
@@ -93,7 +93,7 @@ struct objc_method_description {
 };
 
 /// Defines a property attribute
-// >> property_t 里的 attributes
+// MARK: -- property_t 里的 attributes
 typedef struct {
     const char * _Nonnull name;           /**< The name of the attribute */
     const char * _Nonnull value;          /**< The value of the attribute (usually empty) */
@@ -106,10 +106,8 @@ typedef struct {
 
 /** 
  * Returns a copy of a given object.
- * 
  * @param obj An Objective-C object.
  * @param size The size of the object \e obj.
- * 
  * @return A copy of \e obj.
  */
 OBJC_EXPORT id _Nullable object_copy(id _Nullable obj, size_t size)
@@ -118,111 +116,88 @@ OBJC_EXPORT id _Nullable object_copy(id _Nullable obj, size_t size)
 
 /** 
  * Frees the memory occupied by a given object.
- * 
  * @param obj An Objective-C object.
- * 
  * @return nil
  */
-OBJC_EXPORT id _Nullable
-object_dispose(id _Nullable obj)
+OBJC_EXPORT id _Nullable object_dispose(id _Nullable obj)
     OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0)
     OBJC_ARC_UNAVAILABLE;
 
 /** 
  * Returns the class of an object.
- * 
  * @param obj The object you want to inspect.
- * 
  * @return The class object of which \e object is an instance, 
  *  or \c Nil if \e object is \c nil.
  */
-OBJC_EXPORT Class _Nullable
-object_getClass(id _Nullable obj) 
+OBJC_EXPORT Class _Nullable object_getClass(id _Nullable obj)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
  * Sets the class of an object.
- * 
  * @param obj The object to modify.
  * @param cls A class object.
- * 
  * @return The previous value of \e object's class, or \c Nil if \e object is \c nil.
  */
-OBJC_EXPORT Class _Nullable
-object_setClass(id _Nullable obj, Class _Nonnull cls) 
+OBJC_EXPORT Class _Nullable object_setClass(id _Nullable obj, Class _Nonnull cls)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 
 /** 
  * Returns whether an object is a class object.
- * 
  * @param obj An Objective-C object.
- * 
  * @return true if the object is a class or metaclass, false otherwise.
  */
-OBJC_EXPORT BOOL
-object_isClass(id _Nullable obj)
+OBJC_EXPORT BOOL object_isClass(id _Nullable obj)
     OBJC_AVAILABLE(10.10, 8.0, 9.0, 1.0, 2.0);
 
 
 /** 
  * Reads the value of an instance variable in an object.
- * 
  * @param obj The object containing the instance variable whose value you want to read.
  * @param ivar The Ivar describing the instance variable whose value you want to read.
- * 
  * @return The value of the instance variable specified by \e ivar, or \c nil if \e object is \c nil.
- * 
  * @note \c object_getIvar is faster than \c object_getInstanceVariable if the Ivar
  *  for the instance variable is already known.
  */
-OBJC_EXPORT id _Nullable
-object_getIvar(id _Nullable obj, Ivar _Nonnull ivar) 
+OBJC_EXPORT id _Nullable object_getIvar(id _Nullable obj, Ivar _Nonnull ivar)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
  * Sets the value of an instance variable in an object.
- * 
  * @param obj The object containing the instance variable whose value you want to set.
  * @param ivar The Ivar describing the instance variable whose value you want to set.
  * @param value The new value for the instance variable.
- * 
  * @note Instance variables with known memory management (such as ARC strong and weak)
  *  use that memory management. Instance variables with unknown memory management 
  *  are assigned as if they were unsafe_unretained.
  * @note \c object_setIvar is faster than \c object_setInstanceVariable if the Ivar
  *  for the instance variable is already known.
  */
-OBJC_EXPORT void
-object_setIvar(id _Nullable obj, Ivar _Nonnull ivar, id _Nullable value) 
+OBJC_EXPORT void object_setIvar(id _Nullable obj, Ivar _Nonnull ivar, id _Nullable value)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
  * Sets the value of an instance variable in an object.
- * 
  * @param obj The object containing the instance variable whose value you want to set.
  * @param ivar The Ivar describing the instance variable whose value you want to set.
  * @param value The new value for the instance variable.
- * 
  * @note Instance variables with known memory management (such as ARC strong and weak)
  *  use that memory management. Instance variables with unknown memory management 
  *  are assigned as if they were strong.
  * @note \c object_setIvar is faster than \c object_setInstanceVariable if the Ivar
  *  for the instance variable is already known.
  */
-OBJC_EXPORT void
-object_setIvarWithStrongDefault(id _Nullable obj, Ivar _Nonnull ivar,
+OBJC_EXPORT void object_setIvarWithStrongDefault(id _Nullable obj, Ivar _Nonnull ivar,
                                 id _Nullable value) 
     OBJC_AVAILABLE(10.12, 10.0, 10.0, 3.0, 2.0);
 
+// 修改一个类的成员变量的值
 /** 
  * Changes the value of an instance variable of a class instance.
- * 
  * @param obj A pointer to an instance of a class. Pass the object containing
  *  the instance variable whose value you wish to modify.
  * @param name A C string. Pass the name of the instance variable whose value you wish to modify.
  * @param value The new value for the instance variable.
- * 
  * @return A pointer to the \c Ivar data structure that defines the type and 
  *  name of the instance variable specified by \e name.
  *
@@ -230,15 +205,14 @@ object_setIvarWithStrongDefault(id _Nullable obj, Ivar _Nonnull ivar,
  *  use that memory management. Instance variables with unknown memory management 
  *  are assigned as if they were unsafe_unretained.
  */
-OBJC_EXPORT Ivar _Nullable
-object_setInstanceVariable(id _Nullable obj, const char * _Nonnull name,
+OBJC_EXPORT Ivar _Nullable object_setInstanceVariable(id _Nullable obj, const char * _Nonnull name,
                            void * _Nullable value)
     OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0)
     OBJC_ARC_UNAVAILABLE;
 
+// MARK: -- 修改一个strong修饰的ivar的值
 /** 
  * Changes the value of an instance variable of a class instance.
- * 
  * @param obj A pointer to an instance of a class. Pass the object containing
  *  the instance variable whose value you wish to modify.
  * @param name A C string. Pass the name of the instance variable whose value you wish to modify.
@@ -251,13 +225,13 @@ object_setInstanceVariable(id _Nullable obj, const char * _Nonnull name,
  *  use that memory management. Instance variables with unknown memory management 
  *  are assigned as if they were strong.
  */
-OBJC_EXPORT Ivar _Nullable
-object_setInstanceVariableWithStrongDefault(id _Nullable obj,
+OBJC_EXPORT Ivar _Nullable object_setInstanceVariableWithStrongDefault(id _Nullable obj,
                                             const char * _Nonnull name,
                                             void * _Nullable value)
     OBJC_AVAILABLE(10.12, 10.0, 10.0, 3.0, 2.0)
     OBJC_ARC_UNAVAILABLE;
 
+// MARK: -- 获取一个类的实例的成员变量的值
 /** 
  * Obtains the value of an instance variable of a class instance.
  * 
@@ -482,8 +456,9 @@ class_setVersion(Class _Nullable cls, int version)
  * 
  * @return The size in bytes of instances of the class \e cls, or \c 0 if \e cls is \c Nil.
  */
-OBJC_EXPORT size_t
-class_getInstanceSize(Class _Nullable cls) 
+
+// MARK: -- 获取一个类所有成员变量的 size
+OBJC_EXPORT size_t class_getInstanceSize(Class _Nullable cls)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -495,8 +470,9 @@ class_getInstanceSize(Class _Nullable cls)
  * @return A pointer to an \c Ivar data structure containing information about 
  *  the instance variable specified by \e name.
  */
-OBJC_EXPORT Ivar _Nullable
-class_getInstanceVariable(Class _Nullable cls, const char * _Nonnull name)
+
+// MARK: -- 根据成员变量名称获取某个类中的成员变量(objc_getInstanceVariable 中调用的就是此函数)
+OBJC_EXPORT Ivar _Nullable class_getInstanceVariable(Class _Nullable cls, const char * _Nonnull name)
     OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -507,8 +483,9 @@ class_getInstanceVariable(Class _Nullable cls, const char * _Nonnull name)
  * 
  * @return A pointer to an \c Ivar data structure containing information about the class variable specified by \e name.
  */
-OBJC_EXPORT Ivar _Nullable
-class_getClassVariable(Class _Nullable cls, const char * _Nonnull name) 
+
+// MARK: -- 通过名称获取类成员变量
+OBJC_EXPORT Ivar _Nullable class_getClassVariable(Class _Nullable cls, const char * _Nonnull name)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -540,8 +517,9 @@ class_copyIvarList(Class _Nullable cls, unsigned int * _Nullable outCount)
  *
  * @note This function searches superclasses for implementations, whereas \c class_copyMethodList does not.
  */
-OBJC_EXPORT Method _Nullable
-class_getInstanceMethod(Class _Nullable cls, SEL _Nonnull name)
+
+// MARK: -- 根据 SEL 获取实例 Method
+OBJC_EXPORT Method _Nullable class_getInstanceMethod(Class _Nullable cls, SEL _Nonnull name)
     OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -557,8 +535,9 @@ class_getInstanceMethod(Class _Nullable cls, SEL _Nonnull name)
  * @note Note that this function searches superclasses for implementations, 
  *  whereas \c class_copyMethodList does not.
  */
-OBJC_EXPORT Method _Nullable
-class_getClassMethod(Class _Nullable cls, SEL _Nonnull name)
+
+// MARK: -- 跟SEL获取类Method
+OBJC_EXPORT Method _Nullable class_getClassMethod(Class _Nullable cls, SEL _Nonnull name)
     OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -576,8 +555,9 @@ class_getClassMethod(Class _Nullable cls, SEL _Nonnull name)
  *  an actual method implementation. For example, if instances of the class do not respond to
  *  the selector, the function pointer returned will be part of the runtime's message forwarding machinery.
  */
-OBJC_EXPORT IMP _Nullable
-class_getMethodImplementation(Class _Nullable cls, SEL _Nonnull name) 
+
+// MARK: -- 返回一个函数实现指针
+OBJC_EXPORT IMP _Nullable class_getMethodImplementation(Class _Nullable cls, SEL _Nonnull name)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -606,8 +586,9 @@ class_getMethodImplementation_stret(Class _Nullable cls, SEL _Nonnull name)
  * @note You should usually use \c NSObject's \c respondsToSelector: or \c instancesRespondToSelector: 
  *  methods instead of this function.
  */
-OBJC_EXPORT BOOL
-class_respondsToSelector(Class _Nullable cls, SEL _Nonnull sel) 
+
+// MARK: -- 一个实例对象是否响应某个方法
+OBJC_EXPORT BOOL class_respondsToSelector(Class _Nullable cls, SEL _Nonnull sel)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -627,8 +608,9 @@ class_respondsToSelector(Class _Nullable cls, SEL _Nonnull sel)
  * @note To get the implementations of methods that may be implemented by superclasses, 
  *  use \c class_getInstanceMethod or \c class_getClassMethod.
  */
-OBJC_EXPORT Method _Nonnull * _Nullable
-class_copyMethodList(Class _Nullable cls, unsigned int * _Nullable outCount) 
+
+// MARK: -- 获取一个类的方法列表
+OBJC_EXPORT Method _Nonnull * _Nullable class_copyMethodList(Class _Nullable cls, unsigned int * _Nullable outCount)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -672,8 +654,9 @@ class_copyProtocolList(Class _Nullable cls, unsigned int * _Nullable outCount)
  *  \c NULL if the class does not declare a property with that name, 
  *  or \c NULL if \e cls is \c Nil.
  */
-OBJC_EXPORT objc_property_t _Nullable
-class_getProperty(Class _Nullable cls, const char * _Nonnull name)
+
+// MARK: -- 根据名称获取一个类的属性
+OBJC_EXPORT objc_property_t _Nullable class_getProperty(Class _Nullable cls, const char * _Nonnull name)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -689,8 +672,9 @@ class_getProperty(Class _Nullable cls, const char * _Nonnull name)
  * 
  *  If \e cls declares no properties, or \e cls is \c Nil, returns \c NULL and \c *outCount is \c 0.
  */
-OBJC_EXPORT objc_property_t _Nonnull * _Nullable
-class_copyPropertyList(Class _Nullable cls, unsigned int * _Nullable outCount)
+
+// MARK: -- 获取一个类的属性列表
+OBJC_EXPORT objc_property_t _Nonnull * _Nullable class_copyPropertyList(Class _Nullable cls, unsigned int * _Nullable outCount)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -771,8 +755,9 @@ class_replaceMethod(Class _Nullable cls, SEL _Nonnull name, IMP _Nonnull imp,
  *       variable depends on the ivar's type and the machine architecture. 
  *       For variables of any pointer type, pass log2(sizeof(pointer_type)).
  */
-OBJC_EXPORT BOOL
-class_addIvar(Class _Nullable cls, const char * _Nonnull name, size_t size, 
+
+// MARK: -- 给一个类添加成员变量:必须在调用objc_allocateClassPair之后在objc_registerClassPair之前
+OBJC_EXPORT BOOL class_addIvar(Class _Nullable cls, const char * _Nonnull name, size_t size,
               uint8_t alignment, const char * _Nullable types) 
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
@@ -785,8 +770,9 @@ class_addIvar(Class _Nullable cls, const char * _Nonnull name, size_t size,
  * @return \c YES if the method was added successfully, otherwise \c NO 
  *  (for example, the class already conforms to that protocol).
  */
-OBJC_EXPORT BOOL
-class_addProtocol(Class _Nullable cls, Protocol * _Nonnull protocol) 
+
+// MARK: -- 给一个类添加协议
+OBJC_EXPORT BOOL class_addProtocol(Class _Nullable cls, Protocol * _Nonnull protocol)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -800,8 +786,9 @@ class_addProtocol(Class _Nullable cls, Protocol * _Nonnull protocol)
  * @return \c YES if the property was added successfully, otherwise \c NO
  *  (for example, the class already has that property).
  */
-OBJC_EXPORT BOOL
-class_addProperty(Class _Nullable cls, const char * _Nonnull name,
+
+// MARK: -- 给一个类添加属性
+OBJC_EXPORT BOOL class_addProperty(Class _Nullable cls, const char * _Nonnull name,
                   const objc_property_attribute_t * _Nullable attributes,
                   unsigned int attributeCount)
     OBJC_AVAILABLE(10.7, 4.3, 9.0, 1.0, 2.0);
@@ -814,8 +801,9 @@ class_addProperty(Class _Nullable cls, const char * _Nonnull name,
  * @param attributes An array of property attributes.
  * @param attributeCount The number of attributes in \e attributes. 
  */
-OBJC_EXPORT void
-class_replaceProperty(Class _Nullable cls, const char * _Nonnull name,
+
+// MARK: -- 更新某个属性值
+OBJC_EXPORT void class_replaceProperty(Class _Nullable cls, const char * _Nonnull name,
                       const objc_property_attribute_t * _Nullable attributes,
                       unsigned int attributeCount)
     OBJC_AVAILABLE(10.7, 4.3, 9.0, 1.0, 2.0);
@@ -869,8 +857,9 @@ objc_getFutureClass(const char * _Nonnull name)
  * 
  * @return An instance of the class \e cls.
  */
-OBJC_EXPORT id _Nullable
-class_createInstance(Class _Nullable cls, size_t extraBytes)
+
+// MARK: -- 创建实例
+OBJC_EXPORT id _Nullable class_createInstance(Class _Nullable cls, size_t extraBytes)
     OBJC_RETURNS_RETAINED
     OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0);
 
@@ -902,7 +891,9 @@ objc_constructInstance(Class _Nullable cls, void * _Nullable bytes)
  * 
  * @note CF and other clients do call this under GC.
  */
-OBJC_EXPORT void * _Nullable objc_destructInstance(id _Nullable obj) 
+
+// MARK: -- 销毁一个实例
+OBJC_EXPORT void * _Nullable objc_destructInstance(id _Nullable obj)
     OBJC_AVAILABLE(10.6, 3.0, 9.0, 1.0, 2.0)
     OBJC_ARC_UNAVAILABLE;
 
@@ -911,14 +902,14 @@ OBJC_EXPORT void * _Nullable objc_destructInstance(id _Nullable obj)
 
 /** 
  * Creates a new class and metaclass.
- * 
+ *
  * @param superclass The class to use as the new class's superclass, or \c Nil to create a new root class.
  * @param name The string to use as the new class's name. The string will be copied.
  * @param extraBytes The number of bytes to allocate for indexed ivars at the end of 
  *  the class and metaclass objects. This should usually be \c 0.
- * 
+
  * @return The new class, or Nil if the class could not be created (for example, the desired name is already in use).
- * 
+ 
  * @note You can get a pointer to the new metaclass by calling \c object_getClass(newClass).
  * @note To create a new class, start by calling \c objc_allocateClassPair. 
  *  Then set the class's attributes with functions like \c class_addMethod and \c class_addIvar.
@@ -967,26 +958,28 @@ objc_disposeClassPair(Class _Nonnull cls)
 
 /** 
  * Returns the name of a method.
- * 
+     
  * @param m The method to inspect.
- * 
+ 
  * @return A pointer of type SEL.
- * 
+  
  * @note To get the method name as a C string, call \c sel_getName(method_getName(method)).
  */
-OBJC_EXPORT SEL _Nonnull
-method_getName(Method _Nonnull m) 
+
+// MARK: -- 获取一个方法名称
+OBJC_EXPORT SEL _Nonnull method_getName(Method _Nonnull m)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
  * Returns the implementation of a method.
- * 
+ 
  * @param m The method to inspect.
- * 
+  
  * @return A function pointer of type IMP.
  */
-OBJC_EXPORT IMP _Nonnull
-method_getImplementation(Method _Nonnull m) 
+
+// MARK: -- 获取一个方法的实现
+OBJC_EXPORT IMP _Nonnull method_getImplementation(Method _Nonnull m)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -996,8 +989,9 @@ method_getImplementation(Method _Nonnull m)
  * 
  * @return A C string. The string may be \c NULL.
  */
-OBJC_EXPORT const char * _Nullable
-method_getTypeEncoding(Method _Nonnull m) 
+
+// MARK: -- 获取一个方法的参数和返回值类型
+OBJC_EXPORT const char * _Nullable method_getTypeEncoding(Method _Nonnull m)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -1007,19 +1001,20 @@ method_getTypeEncoding(Method _Nonnull m)
  * 
  * @return An integer containing the number of arguments accepted by the given method.
  */
-OBJC_EXPORT unsigned int
-method_getNumberOfArguments(Method _Nonnull m)
+
+// MARK: -- 获取一个方法参数数量
+OBJC_EXPORT unsigned int method_getNumberOfArguments(Method _Nonnull m)
     OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0);
 
 /** 
  * Returns a string describing a method's return type.
- * 
+ 
  * @param m The method to inspect.
- * 
+ 
  * @return A C string describing the return type. You must free the string with \c free().
  */
-OBJC_EXPORT char * _Nonnull
-method_copyReturnType(Method _Nonnull m) 
+// MARK: --  获取一个方法的返回值类型
+OBJC_EXPORT char * _Nonnull method_copyReturnType(Method _Nonnull m)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -1031,8 +1026,8 @@ method_copyReturnType(Method _Nonnull m)
  * @return A C string describing the type of the parameter at index \e index, or \c NULL
  *  if method has no parameter index \e index. You must free the string with \c free().
  */
-OBJC_EXPORT char * _Nullable
-method_copyArgumentType(Method _Nonnull m, unsigned int index) 
+// MARK: -- 获取方法某个参数的类型
+OBJC_EXPORT char * _Nullable method_copyArgumentType(Method _Nonnull m, unsigned int index)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -1045,8 +1040,9 @@ method_copyArgumentType(Method _Nonnull m, unsigned int index)
  * @note The method's return type string is copied to \e dst.
  *  \e dst is filled as if \c strncpy(dst, parameter_type, dst_len) were called.
  */
-OBJC_EXPORT void
-method_getReturnType(Method _Nonnull m, char * _Nonnull dst, size_t dst_len) 
+
+// MARK: -- 获取方法返回值类型
+OBJC_EXPORT void method_getReturnType(Method _Nonnull m, char * _Nonnull dst, size_t dst_len)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -1078,9 +1074,11 @@ method_getDescription(Method _Nonnull m)
  * 
  * @return The previous implementation of the method.
  */
-OBJC_EXPORT IMP _Nonnull
-method_setImplementation(Method _Nonnull m, IMP _Nonnull imp) 
+
+// MARK: -- 更新设置某个方法的IMP
+OBJC_EXPORT IMP _Nonnull method_setImplementation(Method _Nonnull m, IMP _Nonnull imp)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
+
 
 /** 
  * Exchanges the implementations of two methods.
@@ -1096,8 +1094,8 @@ method_setImplementation(Method _Nonnull m, IMP _Nonnull imp)
  *  method_setImplementation(m2, imp1);
  *  \endcode
  */
-OBJC_EXPORT void
-method_exchangeImplementations(Method _Nonnull m1, Method _Nonnull m2) 
+// MARK: -- 交换两个方法的实现即交换两个方法的IMP
+OBJC_EXPORT void method_exchangeImplementations(Method _Nonnull m1, Method _Nonnull m2)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 
@@ -1105,35 +1103,31 @@ method_exchangeImplementations(Method _Nonnull m1, Method _Nonnull m2)
 
 /** 
  * Returns the name of an instance variable.
- * 
+ 
  * @param v The instance variable you want to enquire about.
- * 
+  
  * @return A C string containing the instance variable's name.
  */
-OBJC_EXPORT const char * _Nullable
-ivar_getName(Ivar _Nonnull v) 
+// MARK: -- 获取成员变量名称
+OBJC_EXPORT const char * _Nullable ivar_getName(Ivar _Nonnull v)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
  * Returns the type string of an instance variable.
- * 
+ 
  * @param v The instance variable you want to enquire about.
- * 
  * @return A C string containing the instance variable's type encoding.
- *
  * @note For possible values, see Objective-C Runtime Programming Guide > Type Encodings.
  */
-OBJC_EXPORT const char * _Nullable
-ivar_getTypeEncoding(Ivar _Nonnull v) 
+// MARK: -- 获取成员变量类型
+OBJC_EXPORT const char * _Nullable ivar_getTypeEncoding(Ivar _Nonnull v)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
  * Returns the offset of an instance variable.
- * 
+ 
  * @param v The instance variable you want to enquire about.
- * 
  * @return The offset of \e v.
- * 
  * @note For instance variables of type \c id or other object types, call \c object_getIvar
  *  and \c object_setIvar instead of using this offset to access the instance variable data directly.
  */
@@ -1146,26 +1140,22 @@ ivar_getOffset(Ivar _Nonnull v)
 
 /** 
  * Returns the name of a property.
- * 
  * @param property The property you want to inquire about.
- * 
  * @return A C string containing the property's name.
  */
-OBJC_EXPORT const char * _Nonnull
-property_getName(objc_property_t _Nonnull property) 
+// MARK: -- 获取属性名称
+OBJC_EXPORT const char * _Nonnull property_getName(objc_property_t _Nonnull property)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
  * Returns the attribute string of a property.
- * 
+  
  * @param property A property.
- *
  * @return A C string containing the property's attributes.
- * 
  * @note The format of the attribute string is described in Declared Properties in Objective-C Runtime Programming Guide.
  */
-OBJC_EXPORT const char * _Nullable
-property_getAttributes(objc_property_t _Nonnull property) 
+// MARK: -- 获取属性的内存管理语义相关
+OBJC_EXPORT const char * _Nullable property_getAttributes(objc_property_t _Nonnull property)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -1207,8 +1197,8 @@ property_copyAttributeValue(objc_property_t _Nonnull property,
  * 
  * @note This function acquires the runtime lock.
  */
-OBJC_EXPORT Protocol * _Nullable
-objc_getProtocol(const char * _Nonnull name)
+// MARK: -- 根据名称获取一个协议
+OBJC_EXPORT Protocol * _Nullable objc_getProtocol(const char * _Nonnull name)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -1221,8 +1211,8 @@ objc_getProtocol(const char * _Nonnull name)
  * 
  * @note This function acquires the runtime lock.
  */
-OBJC_EXPORT Protocol * __unsafe_unretained _Nonnull * _Nullable
-objc_copyProtocolList(unsigned int * _Nullable outCount)
+// MARK: -- 获取运行时所有的协议列表
+OBJC_EXPORT Protocol * __unsafe_unretained _Nonnull * _Nullable objc_copyProtocolList(unsigned int * _Nullable outCount)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -1240,8 +1230,8 @@ objc_copyProtocolList(unsigned int * _Nullable outCount)
  *  \endcode
  *  All the protocols listed between angle brackets are considered part of the ProtocolName protocol.
  */
-OBJC_EXPORT BOOL
-protocol_conformsToProtocol(Protocol * _Nullable proto,
+// MARK: -- 判断一个协议是否遵守另一个协议
+OBJC_EXPORT BOOL protocol_conformsToProtocol(Protocol * _Nullable proto,
                             Protocol * _Nullable other)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
@@ -1253,8 +1243,8 @@ protocol_conformsToProtocol(Protocol * _Nullable proto,
  * 
  * @return \c YES if \e proto is the same as \e other, otherwise \c NO.
  */
-OBJC_EXPORT BOOL
-protocol_isEqual(Protocol * _Nullable proto, Protocol * _Nullable other)
+// MARK: -- 两个协议是否相等
+OBJC_EXPORT BOOL protocol_isEqual(Protocol * _Nullable proto, Protocol * _Nullable other)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -1264,8 +1254,8 @@ protocol_isEqual(Protocol * _Nullable proto, Protocol * _Nullable other)
  * 
  * @return The name of the protocol \e p as a C string.
  */
-OBJC_EXPORT const char * _Nonnull
-protocol_getName(Protocol * _Nonnull proto)
+// MARK: -- 获取某个协议名称
+OBJC_EXPORT const char * _Nonnull protocol_getName(Protocol * _Nonnull proto)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 /** 
@@ -1323,8 +1313,8 @@ protocol_copyMethodDescriptionList(Protocol * _Nonnull proto,
  * @return The property specified by \e name, \e isRequiredProperty, and \e isInstanceProperty for \e proto,
  *  or \c NULL if none of \e proto's properties meets the specification.
  */
-OBJC_EXPORT objc_property_t _Nullable
-protocol_getProperty(Protocol * _Nonnull proto,
+// MARK: -- 获取某个协议中的某个属性
+OBJC_EXPORT objc_property_t _Nullable protocol_getProperty(Protocol * _Nonnull proto,
                      const char * _Nonnull name,
                      BOOL isRequiredProperty, BOOL isInstanceProperty)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
@@ -1337,8 +1327,8 @@ protocol_getProperty(Protocol * _Nonnull proto,
  * protocol_copyPropertyList2(proto, outCount, YES, YES);
  * \endcode
  */
-OBJC_EXPORT objc_property_t _Nonnull * _Nullable
-protocol_copyPropertyList(Protocol * _Nonnull proto,
+// MARK: -- 获取协议的属性列表
+OBJC_EXPORT objc_property_t _Nonnull * _Nullable protocol_copyPropertyList(Protocol * _Nonnull proto,
                           unsigned int * _Nullable outCount)
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
@@ -1386,31 +1376,31 @@ protocol_copyProtocolList(Protocol * _Nonnull proto,
  *  with the same name already exists. 
  * @note There is no dispose method for this. 
  */
-OBJC_EXPORT Protocol * _Nullable
-objc_allocateProtocol(const char * _Nonnull name) 
+// MARK: -- 运行时创建一个协议
+OBJC_EXPORT Protocol * _Nullable objc_allocateProtocol(const char * _Nonnull name)
     OBJC_AVAILABLE(10.7, 4.3, 9.0, 1.0, 2.0);
 
 /** 
  * Registers a newly constructed protocol with the runtime. The protocol
  * will be ready for use and is immutable after this.
- * 
+ 
  * @param proto The protocol you want to register.
  */
-OBJC_EXPORT void
-objc_registerProtocol(Protocol * _Nonnull proto) 
+// MARK: -- 运行时注册一个协议
+OBJC_EXPORT void objc_registerProtocol(Protocol * _Nonnull proto)
     OBJC_AVAILABLE(10.7, 4.3, 9.0, 1.0, 2.0);
 
 /** 
  * Adds a method to a protocol. The protocol must be under construction.
- * 
+ 
  * @param proto The protocol to add a method to.
  * @param name The name of the method to add.
  * @param types A C string that represents the method signature.
  * @param isRequiredMethod YES if the method is not an optional method.
  * @param isInstanceMethod YES if the method is an instance method. 
  */
-OBJC_EXPORT void
-protocol_addMethodDescription(Protocol * _Nonnull proto, SEL _Nonnull name,
+// MARK: -- 为协议添加一个方法
+OBJC_EXPORT void protocol_addMethodDescription(Protocol * _Nonnull proto, SEL _Nonnull name,
                               const char * _Nullable types,
                               BOOL isRequiredMethod, BOOL isInstanceMethod) 
     OBJC_AVAILABLE(10.7, 4.3, 9.0, 1.0, 2.0);
@@ -1419,12 +1409,12 @@ protocol_addMethodDescription(Protocol * _Nonnull proto, SEL _Nonnull name,
  * Adds an incorporated protocol to another protocol. The protocol being
  * added to must still be under construction, while the additional protocol
  * must be already constructed.
- * 
+ 
  * @param proto The protocol you want to add to, it must be under construction.
  * @param addition The protocol you want to incorporate into \e proto, it must be registered.
  */
-OBJC_EXPORT void
-protocol_addProtocol(Protocol * _Nonnull proto, Protocol * _Nonnull addition) 
+// MARK: -- 为协议添加一个协议
+OBJC_EXPORT void protocol_addProtocol(Protocol * _Nonnull proto, Protocol * _Nonnull addition)
     OBJC_AVAILABLE(10.7, 4.3, 9.0, 1.0, 2.0);
 
 /** 
@@ -1439,8 +1429,8 @@ protocol_addProtocol(Protocol * _Nonnull proto, Protocol * _Nonnull addition)
  *  This is the only case allowed fo a property, as a result, setting this to NO will 
  *  not add the property to the protocol at all. 
  */
-OBJC_EXPORT void
-protocol_addProperty(Protocol * _Nonnull proto, const char * _Nonnull name,
+// MARK: -- 为协议添加一个属性
+OBJC_EXPORT void protocol_addProperty(Protocol * _Nonnull proto, const char * _Nonnull name,
                      const objc_property_attribute_t * _Nullable attributes,
                      unsigned int attributeCount,
                      BOOL isRequiredProperty, BOOL isInstanceProperty)

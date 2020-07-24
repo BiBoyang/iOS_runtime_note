@@ -7670,7 +7670,7 @@ object_copyFromZone(id oldObj, size_t extraBytes, void *zone)
 * Removes associative references.
 * Returns `obj`. Does nothing if `obj` is nil.
 **********************************************************************/
-// >> 释放对象 -6-
+// MARK: -- 释放对象 -6-
 void *objc_destructInstance(id obj) {
     if (obj) {
         // Read all of the flags at once for performance.
@@ -7692,7 +7692,7 @@ void *objc_destructInstance(id obj) {
 * fixme
 * Locking: none
 **********************************************************************/
-// >> 释放对象 -5-
+// MARK: -- 释放对象 -5-
 id  object_dispose(id obj)
 {
     if (!obj) return nil;

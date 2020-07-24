@@ -198,7 +198,7 @@ private:
 typedef struct method_t *Method;
 typedef struct ivar_t *Ivar;
 typedef struct category_t *Category;
-// >> property
+// MARK: -- property
 typedef struct property_t *objc_property_t;
 #else
 typedef struct old_method *Method;
@@ -810,7 +810,7 @@ class TimeLogger {
     }
 };
 
-// >> CacheLineSize 显然代表的时候用于缓存的 value 大小
+// MARK: -- CacheLineSize 显然代表的时候用于缓存的 value 大小
 enum { CacheLineSize = 64 };
 /*
  StripedMap 是一个模板类，根据传递的实际参数决定其中 array 成员存储的元素类型。
@@ -832,7 +832,7 @@ class StripedMap {
 #endif
 
     struct PaddedT {
-        // >> alignas是字节对齐的意思，表示让数组中每一个元素的起始位置对齐到64的倍数
+        // MARK: -- alignas是字节对齐的意思，表示让数组中每一个元素的起始位置对齐到64的倍数
         T value alignas(CacheLineSize);
     };
 

@@ -702,7 +702,7 @@ template <bool Debug> class recursive_mutex_tt;
 #else
 #   define LOCKDEBUG 0
 #endif
-// >> 指定别名
+// MARK: -- 指定别名
 using spinlock_t = mutex_tt<LOCKDEBUG>;
 using mutex_t = mutex_tt<LOCKDEBUG>;
 using monitor_t = monitor_tt<LOCKDEBUG>;
@@ -719,7 +719,7 @@ extern const fork_unsafe_lock_t fork_unsafe_lock;
 #include "objc-lockdebug.h"
 
 template <bool Debug>
-// >> 因为 iOS 中自旋锁的问题，将其替换为互斥锁
+// MARK: -- 因为 iOS 中自旋锁的问题，将其替换为互斥锁
 class mutex_tt : nocopy_t {
     /* >> 实现在这里:
      底层的锁，允许等待者在竞争中高效的阻挡。

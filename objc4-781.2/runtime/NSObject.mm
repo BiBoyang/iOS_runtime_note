@@ -436,14 +436,14 @@ objc_storeWeakOrNil(id *location, id newObj)
  * @param newObj Object ptr. 
  */
 #pragma mark ---------------------- weak 的初始化 initweak----------------------
-// >> block 的初始化
+// MARK: -- block 的初始化
 /* -1-
  * location 是弱指针本身的地址
  * newObj 是这个弱指针现在应该指向的新对象
  */
 id objc_initWeak(id *location, id newObj) {
     
-    // >> 查看对象实例是否有效,无效对象直接导致指针释放
+    // MARK: -- 查看对象实例是否有效,无效对象直接导致指针释放
     if (!newObj) {
         *location = nil;
         return nil;
@@ -1852,7 +1852,7 @@ objc_opt_respondsToSelector(id obj, SEL sel)
     return ((BOOL(*)(id, SEL, SEL))objc_msgSend)(obj, @selector(respondsToSelector:), sel);
 }
 
-// >> 释放对象 -2-
+// MARK: -- 释放对象 -2-
 void _objc_rootDealloc(id obj)
 {
     ASSERT(obj);
@@ -2380,7 +2380,7 @@ __attribute__((objc_nonlazy_class))
 
 
 // Replaced by NSZombies
-// >> 释放对象的开始 - 1 -
+// MARK: -- 释放对象的开始 - 1 -
 - (void)dealloc {
     _objc_rootDealloc(self);
 }

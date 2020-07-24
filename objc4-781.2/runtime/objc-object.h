@@ -413,7 +413,7 @@ objc_object::rootIsDeallocating()
     return sidetable_isDeallocating();
 }
 
-// >> 释放weak对象 -8-
+// MARK: -- 释放weak对象 -8-
 inline void  objc_object::clearDeallocating()
 {
     if (slowpath(!isa.nonpointer)) {
@@ -428,7 +428,7 @@ inline void  objc_object::clearDeallocating()
 }
 
 
-// >> 释放 weak 对象的过程 -3-
+// MARK: -- 释放 weak 对象的过程 -3-
 inline void objc_object::rootDealloc()
 {
     if (isTaggedPointer()) return;  // fixme necessary?

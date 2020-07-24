@@ -230,7 +230,7 @@ static void weak_entry_insert(weak_table_t *weak_table, weak_entry_t *new_entry)
     }
 }
 
-// >> 释放weak对象 -13-
+// MARK: -- 释放weak对象 -13-
 static void weak_resize(weak_table_t *weak_table, size_t new_size)
 {
     size_t old_size = TABLE_SIZE(weak_table);
@@ -268,7 +268,7 @@ static void weak_grow_maybe(weak_table_t *weak_table)
 }
 
 // Shrink the table if it is mostly empty.
-// >> 释放weak对象 -12-
+// MARK: -- 释放weak对象 -12-
 static void weak_compact_maybe(weak_table_t *weak_table)
 {
     size_t old_size = TABLE_SIZE(weak_table);
@@ -284,7 +284,7 @@ static void weak_compact_maybe(weak_table_t *weak_table)
 /**
  * Remove entry from the zone's table of weak references.
  */
-// >> 释放weak对象 -11-
+// MARK: -- 释放weak对象 -11-
 static void weak_entry_remove(weak_table_t *weak_table, weak_entry_t *entry)
 {
     // remove entry
@@ -460,7 +460,7 @@ weak_is_registered_no_lock(weak_table_t *weak_table, id referent_id)
  * @param weak_table 
  * @param referent The object being deallocated. 
  */
-// >> 释放weak对象 -10-
+// MARK: -- 释放weak对象 -10-
 void  weak_clear_no_lock(weak_table_t *weak_table, id referent_id)
 {
     objc_object *referent = (objc_object *)referent_id;

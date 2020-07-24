@@ -41,7 +41,7 @@
 
 StripedMap<spinlock_t> PropertyLocks;
 StripedMap<spinlock_t> StructLocks;
-// >> PropertyLocks 是一个 StripedMap 类型的全局变量,而StripedMap 是一个 hashMap，key 是指针，value 是 spinlock_t 对象。
+// MARK: -- PropertyLocks 是一个 StripedMap 类型的全局变量,而StripedMap 是一个 hashMap，key 是指针，value 是 spinlock_t 对象。
 StripedMap<spinlock_t> CppObjectLocks;
 
 #define MUTABLE_COPY 2
@@ -59,13 +59,13 @@ id objc_getProperty(id self, SEL _cmd, ptrdiff_t offset, BOOL atomic) {
     }
 
     // Retain release world
-    // >> 计算属性缩在的指针偏移量
+    // MARK: -- 计算属性缩在的指针偏移量
     id *slot = (id*) ((char*)self + offset);
-    // >> 如果是非原子性操作，直接返回属性的对象指针
+    // MARK: -- 如果是非原子性操作，直接返回属性的对象指针
     if (!atomic) return *slot;
         
     // Atomic retain release world
-    // >> 这里是自旋锁，但是因为有线程优先级冲突的问题，将其修改
+    // MARK: -- 这里是自旋锁，但是因为有线程优先级冲突的问题，将其修改
     spinlock_t& slotlock = PropertyLocks[slot];
     slotlock.lock();
     id value = objc_retain(*slot);
@@ -89,46 +89,46 @@ static inline void reallySetProperty(id self, SEL _cmd, id newValue, ptrdiff_t o
  */
 static inline void reallySetProperty(id self, SEL _cmd, id newValue, ptrdiff_t offset, bool atomic, bool copy, bool mutableCopy)
 {
-    // >> 偏移量是0的时候，指向的其实就是对象自身，对对象自身赋值
+    // MARK: -- 偏移量是0的时候，指向的其实就是对象自身，对对象自身赋值
     if (offset == 0) {
         object_setClass(self, newValue);
         return;
     }
 
     id oldValue;
-    // >> 获取属性的对象指针
+    // MARK: -- 获取属性的对象指针
     id *slot = (id*) ((char*)self + offset);
 
     if (copy) {
-        // >> 浅拷贝，将传入的新对象调用copyWithZone方法浅拷贝一份，并且赋值给newValue变量
+        // MARK: -- 浅拷贝，将传入的新对象调用copyWithZone方法浅拷贝一份，并且赋值给newValue变量
         newValue = [newValue copyWithZone:nil];
     } else if (mutableCopy) {
-        // >> 深拷贝，将传入的新对象调用mutableCopyWithZone方法深拷贝一份，并且赋值给newValue变量
+        // MARK: -- 深拷贝，将传入的新对象调用mutableCopyWithZone方法深拷贝一份，并且赋值给newValue变量
         newValue = [newValue mutableCopyWithZone:nil];
     } else {
-        // >> 非拷贝，且传入的对象与旧对象一致，直接返回
+        // MARK: -- 非拷贝，且传入的对象与旧对象一致，直接返回
         if (*slot == newValue) return;
-        // >> 否则，调用objc_retain函数，将newValue变量指向对象引用计数+1，并且将返回值赋值给newValue变量
+        // MARK: -- 否则，调用objc_retain函数，将newValue变量指向对象引用计数+1，并且将返回值赋值给newValue变量
         newValue = objc_retain(newValue);
     }
 
     if (!atomic) {
-        // >> 非原子操作，将slot指针指向的对象引用赋值给oldValue
+        // MARK: -- 非原子操作，将slot指针指向的对象引用赋值给oldValue
         oldValue = *slot;
         *slot = newValue;
     } else {
-        // >> 原子操作，则获取锁
+        // MARK: -- 原子操作，则获取锁
         spinlock_t& slotlock = PropertyLocks[slot];
         slotlock.lock();
         oldValue = *slot;
         *slot = newValue;        
         slotlock.unlock();
     }
-    // >> 释放oldValue所持有的对象
+    // MARK: -- 释放oldValue所持有的对象
     objc_release(oldValue);
 }
 
-// >> setter 方法的实现
+// MARK: -- setter 方法的实现
 void objc_setProperty(id self, SEL _cmd, ptrdiff_t offset, id newValue, BOOL atomic, signed char shouldCopy) 
 {
     bool copy = (shouldCopy && shouldCopy != MUTABLE_COPY);
@@ -172,16 +172,16 @@ void objc_setProperty_nonatomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t o
 void objc_copyStruct(void *dest, const void *src, ptrdiff_t size, BOOL atomic, BOOL hasStrong __unused) {
     spinlock_t *srcLock = nil;
     spinlock_t *dstLock = nil;
-    // >> 如果是原子操作，则加锁
+    // MARK: -- 如果是原子操作，则加锁
     if (atomic) {
         srcLock = &StructLocks[src];
         dstLock = &StructLocks[dest];
         spinlock_t::lockTwo(srcLock, dstLock);
     }
-    // >> 实际的拷贝操作
+    // MARK: -- 实际的拷贝操作
     memmove(dest, src, size);
 
-    // >> 解锁
+    // MARK: -- 解锁
     if (atomic) {
         spinlock_t::unlockTwo(srcLock, dstLock);
     }
@@ -195,16 +195,16 @@ void objc_copyStruct(void *dest, const void *src, ptrdiff_t size, BOOL atomic, B
 */
 
 void objc_copyCppObjectAtomic(void *dest, const void *src, void (*copyHelper) (void *dest, const void *source)) {
-    // >> 获取源指针的对象锁
+    // MARK: -- 获取源指针的对象锁
     spinlock_t *srcLock = &CppObjectLocks[src];
-    // >> 获取目标指针的对象锁
+    // MARK: -- 获取目标指针的对象锁
     spinlock_t *dstLock = &CppObjectLocks[dest];
-    // >> 对源对象和目标对象进行上锁
+    // MARK: -- 对源对象和目标对象进行上锁
     spinlock_t::lockTwo(srcLock, dstLock);
 
     // let C++ code perform the actual copy.
-    // >> 调用函数指针对应的函数，让C++进行实际的拷贝操作
+    // MARK: -- 调用函数指针对应的函数，让C++进行实际的拷贝操作
     copyHelper(dest, src);
-    // >> 解锁
+    // MARK: -- 解锁
     spinlock_t::unlockTwo(srcLock, dstLock);
 }
