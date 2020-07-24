@@ -21,6 +21,7 @@
 - (Class)class OBJC_SWIFT_UNAVAILABLE("use 'type(of: anObject)' instead");
 - (instancetype)self;
 
+// >> 执行某个方法 一般用于方法解析中动态添加方法
 - (id)performSelector:(SEL)aSelector;
 - (id)performSelector:(SEL)aSelector withObject:(id)object;
 - (id)performSelector:(SEL)aSelector withObject:(id)object1 withObject:(id)object2;
@@ -31,6 +32,7 @@
 - (BOOL)isMemberOfClass:(Class)aClass;
 - (BOOL)conformsToProtocol:(Protocol *)aProtocol;
 
+// >> 内省方法:是否响应某个方法
 - (BOOL)respondsToSelector:(SEL)aSelector;
 
 - (instancetype)retain OBJC_ARC_UNAVAILABLE;
@@ -79,12 +81,16 @@ OBJC_EXPORT
 + (id)copyWithZone:(struct _NSZone *)zone OBJC_ARC_UNAVAILABLE;
 + (id)mutableCopyWithZone:(struct _NSZone *)zone OBJC_ARC_UNAVAILABLE;
 
+// >> 对象是否响应了某方法
 + (BOOL)instancesRespondToSelector:(SEL)aSelector;
 + (BOOL)conformsToProtocol:(Protocol *)protocol;
+// >> 获取一个 SEL 对应的 IMP
 - (IMP)methodForSelector:(SEL)aSelector;
+// >> 获取一个实例方法 SEL 对应的 IMP
 + (IMP)instanceMethodForSelector:(SEL)aSelector;
 - (void)doesNotRecognizeSelector:(SEL)aSelector;
 
+// >> 消息转发
 - (id)forwardingTargetForSelector:(SEL)aSelector OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 - (void)forwardInvocation:(NSInvocation *)anInvocation OBJC_SWIFT_UNAVAILABLE("");
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector OBJC_SWIFT_UNAVAILABLE("");

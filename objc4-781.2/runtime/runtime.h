@@ -21,6 +21,9 @@
  * @APPLE_LICENSE_HEADER_END@
  */
 
+
+#pragma mark ---------- Runtime 对外提供的接口,包含方法,成员变量,分类,属性等结构声明,也包含了 objc_class 的完整声明
+
 #ifndef _OBJC_RUNTIME_H
 #define _OBJC_RUNTIME_H
 
@@ -40,18 +43,23 @@
 
 #if !OBJC_TYPES_DEFINED
 
+// >> 表示一个类里的方法
 /// An opaque type that represents a method in a class definition.
 typedef struct objc_method *Method;
 
+// >> 表示勒种的一个成员变量
 /// An opaque type that represents an instance variable.
 typedef struct objc_ivar *Ivar;
 
+// >> 表示一个分类
 /// An opaque type that represents a category.
 typedef struct objc_category *Category;
 
+// >> 表示一个属性
 /// An opaque type that represents an Objective-C declared property.
 typedef struct objc_property *objc_property_t;
 
+// >> 表示类的声明结构
 struct objc_class {
     Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
 
