@@ -14,24 +14,8 @@
             filePath = "src/dyld2.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "6434"
-            endingLineNumber = "6434"
-            landmarkName = "_main(mainExecutableMH, mainExecutableSlide, argc, argv, envp, apple, startGlue)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "2435B220-C8AE-4481-911E-44BFAD7FC695"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "src/dyld2.cpp"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "6330"
-            endingLineNumber = "6330"
+            startingLineNumber = "6439"
+            endingLineNumber = "6439"
             landmarkName = "_main(mainExecutableMH, mainExecutableSlide, argc, argv, envp, apple, startGlue)"
             landmarkType = "9">
          </BreakpointContent>

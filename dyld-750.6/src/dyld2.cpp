@@ -1559,6 +1559,7 @@ static void runAllStaticTerminators(void* extra)
 	}
 }
 
+#pragma mark -------initializeMainExecutable
 void initializeMainExecutable()
 {
 	// record that we've reached this step
@@ -3980,7 +3981,7 @@ ImageLoader* load(const char* path, const LoadContext& context, unsigned& cacheI
 }
 
 
-
+#pragma mark ----- mapSharedCache
 
 
 static void mapSharedCache()
@@ -3996,6 +3997,9 @@ static void mapSharedCache()
 	opts.useHaswell			= false;
 #endif
 	opts.verbose			= gLinkContext.verboseMapping;
+
+#pragma mark -----loadDyldCache
+
 	loadDyldCache(opts, &sSharedCacheLoadInfo);
 
 	// update global state
@@ -6042,6 +6046,7 @@ static bool needsDyld2ErrorMessage(const char* msg)
 
 
 // Note: buildLaunchClosure calls halt() if there is an error building the closure
+#pragma mark ----- 写入 Shared Library Cache
 static const dyld3::closure::LaunchClosure* buildLaunchClosure(const uint8_t* mainExecutableCDHash,
 															   const dyld3::closure::LoadedFileInfo& mainFileInfo, const char* envp[])
 {
@@ -6416,7 +6421,7 @@ uintptr_t _main(const macho_header* mainExecutableMH, uintptr_t mainExecutableSl
 	getHostInfo(mainExecutableMH, mainExecutableSlide);
 
 
-#pragma mark --------加载缓存 getHostInfo && load shared cache
+#pragma mark --------加载缓存 getHostInfo && load shared cache  **** checkSharedRegionDisable
 	
 	
 	// load shared cache
@@ -6601,6 +6606,9 @@ reloadAllImages:
 
 		CRSetCrashLogMessage(sLoadingCrashMessage);
 		// instantiate ImageLoader for main executable
+		
+#pragma mark -------- 实例化主程序
+		
 		sMainExecutable = instantiateFromLoadedImage(mainExecutableMH, mainExecutableSlide, sExecPath);
 		gLinkContext.mainExecutable = sMainExecutable;
 		gLinkContext.mainExecutableCodeSigned = hasCodeSignatureLoadCommand(mainExecutableMH);
@@ -6687,7 +6695,9 @@ reloadAllImages:
 			sMainExecutable->rebase(gLinkContext, -mainExecutableSlide);
 		}
 #endif
+		
 		link(sMainExecutable, sEnv.DYLD_BIND_AT_LAUNCH, true, ImageLoader::RPathChain(NULL, NULL), -1);
+		
 		sMainExecutable->setNeverUnloadRecursive();
 		if ( sMainExecutable->forceFlat() ) {
 			gLinkContext.bindFlat = true;
@@ -6757,7 +6767,7 @@ reloadAllImages:
 		}
 	#endif
 
-#pragma mark --------弱符号绑定 apply interposing
+#pragma mark --------弱符号绑定
 		// apply interposing to initial set of images *********
 		for(int i=0; i < sImageRoots.size(); ++i) {
 			sImageRoots[i]->applyInterposing(gLinkContext);
@@ -6814,7 +6824,7 @@ reloadAllImages:
 		else
 #endif
 		{
-#pragma mark --------准备进入 main 函数 initializeMainExecutable
+#pragma mark --------准备进入 main 函数
 			// find entry point for main executable
 			result = (uintptr_t)sMainExecutable->getEntryFromLC_MAIN();
 			if ( result != 0 ) {

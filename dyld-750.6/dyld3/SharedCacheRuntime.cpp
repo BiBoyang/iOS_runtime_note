@@ -674,7 +674,8 @@ static bool mapCachePrivate(const SharedCacheOptions& options, SharedCacheLoadIn
 
 
 
-bool loadDyldCache(const SharedCacheOptions& options, SharedCacheLoadInfo* results)
+bool
+    loadDyldCache(const SharedCacheOptions& options, SharedCacheLoadInfo* results)
 {
     results->loadAddress        = 0;
     results->slide              = 0;

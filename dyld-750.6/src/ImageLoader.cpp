@@ -490,7 +490,7 @@ void ImageLoader::vmAccountingSetSuspended(const LinkContext& context, bool susp
 #endif
 }
 
-
+#pragma mark ----------Link
 void ImageLoader::link(const LinkContext& context, bool forceLazysBound, bool preflightOnly, bool neverUnload, const RPathChain& loaderRPaths, const char* imagePath)
 {
 	//dyld::log("ImageLoader::link(%s) refCount=%d, neverUnload=%d\n", imagePath, fDlopenReferenceCount, fNeverUnload);
